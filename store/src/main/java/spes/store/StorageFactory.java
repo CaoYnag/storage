@@ -34,8 +34,10 @@ public class StorageFactory {
      * get instance of StorageFactory
      * */
     public static StorageFactory get() {
-        if (_inst == null)
-            _inst = new StorageFactory();
+        synchronized (log){
+            if (_inst == null)
+                _inst = new StorageFactory();
+        }
         return _inst;
     }
 
@@ -43,9 +45,11 @@ public class StorageFactory {
      * release all storage
      * */
     public static void release() {
-        if (_inst != null) {
-            _inst.destroy();
-            _inst = null;
+        synchronized (log){
+            if (_inst != null) {
+                _inst.destroy();
+                _inst = null;
+            }
         }
     }
 
@@ -97,8 +101,8 @@ public class StorageFactory {
         synchronized (log) {
             for (Storage s : _insts) {
                 s.destroy();
-                _insts.remove(s);
             }
+            _insts.clear();
         }
     }
 

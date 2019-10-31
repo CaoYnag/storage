@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import spes.store.Storage;
 import spes.store.StorageFactory;
+import spes.struct.LinkedList;
+import spes.struct.List;
 
 public class TestApp {
     private TestData[] datas;
