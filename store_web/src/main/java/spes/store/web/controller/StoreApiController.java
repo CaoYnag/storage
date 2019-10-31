@@ -3,9 +3,9 @@ package spes.store.web.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import spes.store.Storage;
-import spes.store.StorageException;
 import spes.store.StorageFactory;
 import spes.store.StoreConf;
+import spes.store.except.StorageException;
 import spes.utils.web.pojo.RetRslt;
 
 import java.util.HashMap;

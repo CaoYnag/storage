@@ -48,8 +48,8 @@ public class StorageFactoryTest {
         Assert.assertNull(factory.Get(this.getClass(), "test_rw"));
 
 
-        Assert.assertTrue(factory.Get("test_rw").getPerm().readable());
-        Assert.assertTrue(factory.Get("test_rw").getPerm().writable());
+        Assert.assertTrue(factory.Get("test_rw").perm().readable());
+        Assert.assertTrue(factory.Get("test_rw").perm().writable());
         Assert.assertTrue(factory.Get("test_rw").valid());
         Assert.assertEquals(factory.Get("test_rw").type(), "test");
     }

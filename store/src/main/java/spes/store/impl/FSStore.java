@@ -2,33 +2,29 @@ package spes.store.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import spes.store.Storage;
-import spes.store.StorageException;
+import spes.store.StorageImpl;
 import spes.store.StoreConf;
-import spes.store.anno.Read;
-import spes.store.anno.Write;
+import spes.store.except.StorageException;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
-public class FSStore extends Storage {
+public class FSStore extends StorageImpl {
     private Log log = LogFactory.getLog(this.getClass());
 
-    public FSStore(StoreConf conf) {
-        super(conf);
+    public FSStore(){
     }
 
     @Override
-    public void create(String json) throws StorageException {
+    public void create(StoreConf cf) throws StorageException {
+        super.create(cf);
     }
 
     @Override
     public void destroy() {
-
     }
 
-    @Write
     public void save(String path, byte[] data){
         try{
             File f = new File(path);
@@ -42,7 +38,6 @@ public class FSStore extends Storage {
         }
     }
 
-    @Read
     public byte[] read(String path){
         byte[] data = null;
         try{

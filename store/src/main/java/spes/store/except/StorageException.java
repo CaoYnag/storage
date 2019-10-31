@@ -1,4 +1,4 @@
-package spes.store;
+package spes.store.except;
 
 public class StorageException extends Exception {
     public StorageException(){super();}

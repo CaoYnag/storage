@@ -4,8 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import spes.store.anno.Read;
 import spes.store.anno.StorageType;
-import spes.struct.Convertor;
+import spes.store.anno.Write;
+import spes.store.except.StorageException;
+import spes.store.except.StoragePermException;
 import spes.struct.LinkedList;
 import spes.struct.List;
 import spes.struct.Tuple;
@@ -14,6 +17,10 @@ import spes.utils.util.ConvertUtils;
 import spes.utils.util.ReflectUtils;
 
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +36,8 @@ public class StorageFactory {
     private boolean _inited;
     private StoreConfiguration _conf;
     private Map<String, Class<?>> _types;
+    /* only use for proxy generating */
+    private Class<?>[] PROXY_INTFS;
 
     /*
      * get instance of StorageFactory
@@ -67,6 +76,27 @@ public class StorageFactory {
                 _conf = null;
                 _conf = gson.fromJson(new InputStreamReader(StorageFactory.class.getResourceAsStream(CONF_FILE)), StoreConfiguration.class);
 
+                // try find all types
+                _types = new HashMap<>();
+                List<Class<?>> clss = new LinkedList<>();
+                List<Class<?>> tps = new LinkedList<>();
+                for (String pkg : _conf.store_scan_pkgs) {
+                    clss.addAll(ReflectUtils.getClassesByPackage(pkg));
+                }
+                for (Class<?> cls : clss) {
+                    try {
+                        StorageType st = cls.getAnnotation(StorageType.class);
+                        if (st != null){
+                            _types.put(st.value(), cls);
+                            tps.add(cls);
+                        }
+                    } catch (Exception e) {
+                    }
+                }
+                tps.add(Storage.class);
+                PROXY_INTFS = tps.toArray(new Class[0]);
+
+                // load all configured stores
                 for (StoreConf conf : _conf.stores) {
                     try {
                         add(conf);
@@ -75,21 +105,6 @@ public class StorageFactory {
                     }
                 }
                 log.info("load storage complete, loaded " + _insts.size() + ".");
-
-
-                _types = new HashMap<>();
-                List<Class<?>> clss = new LinkedList<>();
-                for (String pkg : _conf.store_scan_pkgs) {
-                    clss.addAll(ReflectUtils.getClassesByPackage(pkg));
-                }
-                for (Class<?> cls : clss) {
-                    try {
-                        StorageType st = cls.getAnnotation(StorageType.class);
-                        if (st != null)
-                            _types.put(st.value(), cls);
-                    } catch (Exception e) {
-                    }
-                }
             } catch (Exception e) {
                 log.error("err while loading storage drivers");
             }
@@ -114,7 +129,7 @@ public class StorageFactory {
             if (!_inited) return null;
             for (Storage s : _insts)
                 if (s != null && s.valid())
-                    return s;
+                    return (Storage) s;
             return null;
         }
     }
@@ -127,7 +142,7 @@ public class StorageFactory {
             if (!_inited) return null;
             for (Storage s : _insts)
                 if (s != null && cls.isAssignableFrom(s.getClass()) && s.valid())
-                    return s;
+                    return (Storage) s;
             return null;
         }
     }
@@ -139,8 +154,9 @@ public class StorageFactory {
     public Storage Get(String name) {
         synchronized (log) {
             if (!_inited) return null;
-            for (Storage s : _insts)
-                if (s != null && s.valid() && s.getName().equals(name)) return s;
+            for (Storage s : _insts){
+                if (s != null && s.valid() && s.name().equals(name)) return (Storage) s;
+            }
             return null;
         }
     }
@@ -165,12 +181,34 @@ public class StorageFactory {
         synchronized (log) {
             if (!_inited) return false;
             for (Storage s : _insts)
-                if (s.getName().equals(name))
+                if (s.name().equals(name))
                     return true;
             return false;
         }
     }
 
+    class StorageProxy implements InvocationHandler{
+        private Storage _store;
+
+        public StorageProxy(Storage _store) {
+            this._store = _store;
+        }
+
+        @Override
+        public Object invoke(Object o, Method method, Object[] args) throws StoragePermException {
+            Read r = method.getAnnotation(Read.class);
+            Write w = method.getAnnotation(Write.class);
+            if(r != null && !_store.perm().readable()) throw new StoragePermException("NO READ PERMISSION: " + _store.name());
+            if(w != null && !_store.perm().writable()) throw new StoragePermException("NO WRITE PERMISSION: " + _store.name());
+            Object ret = null;
+            try {
+                ret = method.invoke(_store, args);
+            } catch (IllegalAccessException e) {
+            } catch (InvocationTargetException e) {
+            }
+            return ret;
+        }
+    }
     public void add(StoreConf conf) throws StorageException {
         synchronized (log) {
             if (exists(conf.getName()))
@@ -178,10 +216,11 @@ public class StorageFactory {
             try {
                 Class cls = Class.forName(conf.getDriver());
                 if (Storage.class.isAssignableFrom(cls)) {
-                    Storage s = (Storage) cls.getConstructor(StoreConf.class).newInstance(conf);
-                    if (s == null) throw new StorageException();
-                    s.create(conf.getConf());
-                    _insts.add(s);
+                    Storage s = (Storage) cls.getConstructor().newInstance();
+                    if (s == null) throw new StorageException("Cannot construct storage " + conf.getName());
+                    s.create(conf);
+                    Storage proxy = (Storage) Proxy.newProxyInstance(this.getClass().getClassLoader(), PROXY_INTFS, new StorageProxy(s));
+                    _insts.add(proxy);
                 }
             } catch (StorageException se) {
                 throw se;
@@ -196,7 +235,7 @@ public class StorageFactory {
         synchronized (log) {
             if (!_inited) return;
             for (Storage s : _insts)
-                if (s.getName().equals(name)) {
+                if (s.name().equals(name)) {
                     s.destroy();
                     _insts.remove(s);
                 }
