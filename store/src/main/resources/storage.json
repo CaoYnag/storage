@@ -1,0 +1,13 @@
+{
+  "store_scan_pkgs": [
+    ""
+  ],
+  "stores": [
+    {
+      "name": "local",
+      "driver": "cn.cas.ie.jjoobb.store.impl.FSStore",
+      "perm": "rw",
+      "conf": "{}"
+    }
+  ]
+}

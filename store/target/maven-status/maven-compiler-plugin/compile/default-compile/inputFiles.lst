@@ -1,0 +1,13 @@
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/StorageException.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/StorePerm.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/impl/SampleStore.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/anno/Read.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/StorageFactory.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/intf/TypedStore.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/impl/FSStore.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/intf/TestStore.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/StoreUtils.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/anno/Write.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/anno/StorageType.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/Storage.java
+/home/spes/Code/IdeaPro/storage/store/src/main/java/spes/store/StoreConf.java

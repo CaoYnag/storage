@@ -1,0 +1,41 @@
+.table-oper, .list-title
+{
+    background-color: black;
+    color: white;
+    height: 23px;
+}
+.left
+{
+    float: left;
+    position: relative;
+}
+.right
+{
+    float: right;
+    position: relative;
+}
+.content{
+    padding: 5px;
+}
+.hide{
+    display: none;
+}
+.show{
+    display: block;
+}
+#updateModal>div{
+    width: 360px;
+}
+.store.info{
+    text-align: left;
+}
+
+.store.info.value{
+    border: 1px solid black;
+    padding: 2px;
+    word-break: break-word;
+    background-color: #FFF;
+}
+.divider-simple{
+    margin: 1px;
+}

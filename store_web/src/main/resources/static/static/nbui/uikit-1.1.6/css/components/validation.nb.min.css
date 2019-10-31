@@ -1,0 +1,2 @@
+/*!  1.1.6 |  | (c) 2014 YOOtheme | MIT License */
+label.error{color:#fff;position:absolute;background:-webkit-linear-gradient(top,#015b94,#00c2ad);background:-moz-linear-gradient(top,#015b94,#00c2ad);padding:0 3px 0 2px;margin-left:5px;margin-top:5px}label.error:after{content:"";display:block;position:absolute;width:0;height:0;border:5px dashed #94d4ff;left:-5px;top:50%;margin-top:-5px;border-right-style:solid;border-left:none;border-top-color:transparent;border-bottom-color:transparent;border-left-color:#94d4ff}input.error{border-color:#db9f7d!important}

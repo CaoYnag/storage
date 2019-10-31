@@ -1,0 +1,66 @@
+@import '~sweetalert2/src/variables';
+
+$borderless-theme-color: rgba(54, 70, 93, .99);
+
+// BOX MODEL
+$swal2-box-shadow: none;
+
+// BACKGROUND
+$swal2-background: transparent;
+
+// BACKDROP
+$swal2-backdrop: $borderless-theme-color;
+
+// TITLE
+$swal2-title-color: $swal2-white;
+
+// CONTENT
+$swal2-content-color: $swal2-white;
+
+// PROGRESS STEPS
+$swal2-progress-step-background: rgba($swal2-black, .2);
+
+// VALIDATION MESSAGE
+$swal2-validation-message-background: transparent;
+$swal2-validation-message-color: $swal2-white;
+
+// FOOTER
+$swal2-footer-color: $swal2-white;
+$swal2-footer-border-color: rgba($swal2-white, .2);
+
+// CLOSE BUTTON
+$swal2-close-button-position: fixed;
+$swal2-close-button-font-size: 3em;
+$swal2-close-button-color: $swal2-white;
+
+$swal2-show-animation: opacity-show .3s;
+$swal2-hide-animation: opacity-hide .1s;
+
+@import '~sweetalert2/src/sweetalert2';
+
+.swal2-select {
+  background: $swal2-white;
+  color: lighten($swal2-black, 25);
+}
+
+.swal2-toast {
+  background: $borderless-theme-color;
+}
+
+// Appearance animation
+@keyframes opacity-show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+// Disppearance animation
+@keyframes opacity-hide {
+  100% {
+    opacity: 0;
+  }
+}

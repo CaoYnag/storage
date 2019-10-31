@@ -1,0 +1,25 @@
+{
+  "store_scan_pkgs": [
+    "test.store"
+  ],
+  "stores": [
+    {
+      "name": "test_rw",
+      "driver": "test.store.TestStorage",
+      "perm": "rw",
+      "conf": "{}"
+    },
+    {
+      "name": "test_r",
+      "driver": "test.store.TestStorage",
+      "perm": "r",
+      "conf": "{}"
+    },
+    {
+      "name": "test_w",
+      "driver": "test.store.TestStorage",
+      "perm": "w",
+      "conf": "{}"
+    }
+  ]
+}
