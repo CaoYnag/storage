@@ -11,5 +11,5 @@ manage data storage
 
 - [ ] rollback?
 - [ ] progress
-- [ ] R/W perm control
+- [x] R/W perm control
 - [ ] thread-safe

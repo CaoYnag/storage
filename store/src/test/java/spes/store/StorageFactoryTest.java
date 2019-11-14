@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import spes.store.intf.TypedStore;
 import test.store.TestStore;
 
 public class StorageFactoryTest {
@@ -18,18 +17,18 @@ public class StorageFactoryTest {
         StorageFactory.release();
     }
 
-    @org.junit.Test
+    @Test
     public void exists() {
         Assert.assertTrue(factory.exists("test_rw"));
         Assert.assertFalse(factory.exists("test"));
     }
 
-    @org.junit.Test
+    @Test
     public void list() {
         Assert.assertTrue(factory.list().size() == 3);
     }
 
-    @org.junit.Test
+    @Test
     public void getAllStorageTypes() {
         Assert.assertTrue(factory.getAllStorageTypes().size() == 1);
     }

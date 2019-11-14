@@ -6,7 +6,13 @@
 
     <groupId>spes.store</groupId>
     <artifactId>store</artifactId>
-    <version>1.0.0</version>
+    <version>${store.version}</version>
+
+    <parent>
+        <groupId>spes.store</groupId>
+        <artifactId>storage</artifactId>
+        <version>1.1.0</version>
+    </parent>
 
     <dependencies>
         <dependency>

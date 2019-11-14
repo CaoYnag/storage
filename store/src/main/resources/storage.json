@@ -5,7 +5,7 @@
   "stores": [
     {
       "name": "local",
-      "driver": "cn.cas.ie.jjoobb.store.impl.FSStore",
+      "driver": "spes.store.impl.FSStore",
       "perm": "rw",
       "conf": "{}"
     }

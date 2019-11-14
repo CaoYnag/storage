@@ -195,7 +195,7 @@ public class StorageFactory {
         }
 
         @Override
-        public Object invoke(Object o, Method method, Object[] args) throws StoragePermException {
+        public Object invoke(Object o, Method method, Object[] args) throws Throwable {
             Read r = method.getAnnotation(Read.class);
             Write w = method.getAnnotation(Write.class);
             if(r != null && !_store.perm().readable()) throw new StoragePermException("NO READ PERMISSION: " + _store.name());
@@ -204,7 +204,7 @@ public class StorageFactory {
             try {
                 ret = method.invoke(_store, args);
             } catch (IllegalAccessException e) {
-            } catch (InvocationTargetException e) {
+            } catch (InvocationTargetException ite) {
             }
             return ret;
         }

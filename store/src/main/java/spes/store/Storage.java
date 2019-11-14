@@ -3,7 +3,6 @@ package spes.store;
 import spes.store.except.StorageException;
 
 public interface Storage{
-
     /*
      * init the storage here
      * using conf string in StoreConf
@@ -42,4 +41,21 @@ public interface Storage{
     String driver();
     StorePerm perm();
     String conf();
+
+
+    /*
+    * for front templates or other places uses getter to access attr of a storage
+    * */
+    default String getName(){
+        return name();
+    }
+    default String getDriver(){
+        return driver();
+    }
+    default String getPermStr(){
+        return perm().getPermStr();
+    }
+    default String getConf(){
+        return conf();
+    }
 }
