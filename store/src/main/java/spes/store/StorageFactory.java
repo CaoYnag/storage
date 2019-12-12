@@ -74,6 +74,7 @@ public class StorageFactory {
             try {
                 Gson gson = new GsonBuilder().create();
                 _conf = null;
+                log.info("Using conf file: " + StorageFactory.class.getResource(CONF_FILE).getPath());
                 _conf = gson.fromJson(new InputStreamReader(StorageFactory.class.getResourceAsStream(CONF_FILE)), StoreConfiguration.class);
 
                 // try find all types
@@ -104,7 +105,7 @@ public class StorageFactory {
                         log.error("err while loading storage " + conf.getName(), e);
                     }
                 }
-                log.info("load storage complete, loaded " + _insts.size() + ".");
+                log.info("load storage complete, loaded " + _insts.size() + ": " + ConvertUtils.convert(_insts, Storage::name));
             } catch (Exception e) {
                 log.error("err while loading storage drivers");
             }
