@@ -13,14 +13,14 @@ import spes.utils.util.ConvertUtils;
 public class StoreWebController {
     private StorageFactory factory;
 
-    public StoreWebController(){
+    public StoreWebController() {
         factory = StorageFactory.get();
     }
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public String list(Model model){
+    public String list(Model model) {
         model.addAttribute("stores", ConvertUtils.convert(factory.list(), Storage::asStoreConf));
-        model.addAttribute("types", ConvertUtils.convert(factory.getAllStorageTypes(), t->t.first));
+        model.addAttribute("types", ConvertUtils.convert(factory.getAllStorageTypes(), t -> t.first));
         return "store/list";
     }
 }
