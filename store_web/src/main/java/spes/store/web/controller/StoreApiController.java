@@ -6,6 +6,7 @@ import spes.store.Storage;
 import spes.store.StorageFactory;
 import spes.store.StoreConf;
 import spes.store.except.StorageException;
+import spes.struct.List;
 import spes.utils.web.pojo.RetRslt;
 
 import java.util.HashMap;
@@ -48,7 +49,7 @@ public class StoreApiController {
     @ResponseBody
     @RequestMapping(value = "stores", method = RequestMethod.GET)
     public RetRslt list() {
-        var list = factory.list();
+        List<Storage> list = factory.list();
         return RetRslt.ok(list);
     }
 
