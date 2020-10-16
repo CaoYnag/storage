@@ -65,7 +65,11 @@
                 <tr>
                     <td>Driver</td>
                     <td><input type="text" list="driver_list" id="uDriver">
-                        <datalist id="driver_list"></datalist></td>
+                        <datalist id="driver_list">
+                        <#list drivers as driver>
+                        <td id="d_${driver.first}">${driver.second}</td>
+                        </#list>
+                        </datalist></td>
                 </tr>
                 <tr>
                     <td>Perm</td>
@@ -210,13 +214,14 @@
     }
 
     $(document).ready(function () {
-        $.get("${ctx.contextPath}/api/store/drivers/", function(data){
-            console.log(data);
-            let html = "";
-            for(let driver of data)
-                html += "<option value='d_" + driver.replace(/\./g, "_") + "'>" + driver + "</option>";
-            $('#driver_list').html(html);
-        });
+        // imple with spring model instead of ajax
+        <#--$.get("${ctx.contextPath}/api/store/drivers/", function(data){-->
+        <#--    console.log(data);-->
+        <#--    let html = "";-->
+        <#--    for(let driver of data)-->
+        <#--        html += "<option value='d_" + driver.replace(/\./g, "_") + "'>" + driver + "</option>";-->
+        <#--    $('#driver_list').html(html);-->
+        <#--});-->
         $(".store.detail").click(function () {
             let nm = $(this).attr("id").replace("detail_", "");
             console.log(nm);
