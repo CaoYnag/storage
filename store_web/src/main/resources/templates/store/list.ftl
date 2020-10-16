@@ -67,7 +67,7 @@
                     <td><input type="text" list="driver_list" id="uDriver">
                         <datalist id="driver_list">
                         <#list drivers as driver>
-                        <td id="d_${driver.first}">${driver.second}</td>
+                        <option id="d_${driver.first}">${driver.second}</option>
                         </#list>
                         </datalist></td>
                 </tr>
