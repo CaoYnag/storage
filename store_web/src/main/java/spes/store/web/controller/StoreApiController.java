@@ -7,6 +7,7 @@ import spes.store.StorageFactory;
 import spes.store.StoreConf;
 import spes.store.except.StorageException;
 import spes.struct.List;
+import spes.utils.util.ConvertUtils;
 import spes.utils.web.pojo.RetRslt;
 
 import java.util.HashMap;
@@ -50,6 +51,13 @@ public class StoreApiController {
     @RequestMapping(value = "stores", method = RequestMethod.GET)
     public RetRslt list() {
         List<Storage> list = factory.list();
+        return RetRslt.ok(list);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "drivers", method = RequestMethod.GET)
+    public RetRslt drivers() {
+        java.util.List<String> list = ConvertUtils.convert(factory.drivers(), Class::getName);
         return RetRslt.ok(list);
     }
 

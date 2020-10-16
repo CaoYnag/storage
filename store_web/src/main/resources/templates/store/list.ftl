@@ -64,7 +64,8 @@
                 </tr>
                 <tr>
                     <td>Driver</td>
-                    <td><input type="text" id="uDriver"></td>
+                    <td><input type="text" list="driver_list" id="uDriver">
+                        <datalist id="driver_list"></datalist></td>
                 </tr>
                 <tr>
                     <td>Perm</td>
@@ -209,25 +210,32 @@
     }
 
     $(document).ready(function () {
+        $.get("${ctx.contextPath}/api/store/drivers/", function(data){
+            console.log(data);
+            let html = "";
+            for(let driver of data)
+                html += "<option value='d_" + driver.replace(/\./g, "_") + "'>" + driver + "</option>";
+            $('#driver_list').html(html);
+        });
         $(".store.detail").click(function () {
-            var nm = $(this).attr("id").replace("detail_", "");
+            let nm = $(this).attr("id").replace("detail_", "");
             console.log(nm);
             fillForm(nm, $("#" + nm + "_dv").html(), $("#" + nm + "_pm").html(), $("#" + nm + "_cf").html());
             UIkit.modal("#infoModal").show();
 
-            var types = new Array();
+            let types = new Array();
             $(".store.type").each(function(){types.add($(this).attr("id"));});
             console.log(types);
             if(types.length > 0){
-                var url = "${ctx.contextPath}/api/store/types/";
-                for(var tp of types)
+                let url = "${ctx.contextPath}/api/store/types/";
+                for(let tp of types)
                     url += tp + ",";
                 url += "%";
                 url = url.replace(",%", "").replace("%", "");
                 url += "/" + nm;
                 $.get(url, function(data){
                     console.log(data);
-                    for(var tp of types){
+                    for(let tp of types){
                         if(data.data[tp] == null) // unknown
                             $("#" + tp + "_sp").html("<div class=\"uk-badge uk-badge-warning\">unknown</div>");
                         else if(data.data[tp] == "true") // succ
@@ -242,7 +250,7 @@
         });
         $(".store.delete").click(
                 function () {
-                    var nm = $(this).attr("id").replace("delete_", "");
+                    let nm = $(this).attr("id").replace("delete_", "");
                     deleteStore(nm);
                 });
         $(".store.add").click(function () {

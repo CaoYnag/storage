@@ -33,6 +33,7 @@ public class StorageFactory {
 
     private List<Storage> _insts;
     private List<Class<?>> _clss;
+    private List<Class<?>> _drivers;
     private boolean _inited;
     private StoreConfiguration _conf;
     private Map<String, Class<?>> _types;
@@ -71,6 +72,7 @@ public class StorageFactory {
         _inited = false;
         synchronized (log) {
             _insts = new LinkedList<>();
+            _drivers = new LinkedList<>();
             try {
                 Gson gson = new GsonBuilder().create();
                 _conf = null;
@@ -93,6 +95,8 @@ public class StorageFactory {
                         }
                     } catch (Exception e) {
                     }
+                    if(!cls.isInterface() && Storage.class.isAssignableFrom(cls))
+                        _drivers.add(cls);
                 }
                 tps.add(Storage.class);
                 PROXY_INTFS = tps.toArray(new Class[0]);
@@ -247,6 +251,15 @@ public class StorageFactory {
         synchronized (log) {
             return _insts;
         }
+    }
+
+    public List<Class<?>> drivers(){
+        return _drivers;
+    }
+
+    public void addDriver(Class<?> cls){
+        if(cls != null && !cls.isInterface() && Storage.class.isAssignableFrom(cls))
+            _drivers.add(cls);
     }
 
     public List<Tuple<String, Class<?>>> getAllStorageTypes() {

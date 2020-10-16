@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import test.store.TestStore;
+import test.store.TestStorage;
 
 public class StorageFactoryTest {
     private StorageFactory factory;
@@ -51,5 +52,22 @@ public class StorageFactoryTest {
         Assert.assertTrue(factory.Get("test_rw").perm().writable());
         Assert.assertTrue(factory.Get("test_rw").valid());
         Assert.assertEquals(factory.Get("test_rw").type(), "test");
+    }
+
+    class Tmp extends StorageImpl{
+        public void destroy(){}
+        public boolean valid(){return false;}
+        public String type(){return "";}
+    };
+
+    @Test
+    public void drivers() {
+        Assert.assertNotNull(factory.drivers());
+        Assert.assertEquals(factory.drivers().size(), 1);
+        Assert.assertEquals(factory.drivers().get(0), TestStorage.class);
+        factory.addDriver(this.getClass());
+        factory.addDriver(Tmp.class);
+        Assert.assertEquals(factory.drivers().size(), 2);
+        Assert.assertEquals(factory.drivers().get(1), Tmp.class);
     }
 }
