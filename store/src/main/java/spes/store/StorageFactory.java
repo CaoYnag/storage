@@ -84,7 +84,7 @@ public class StorageFactory {
                 List<Class<?>> clss = new LinkedList<>();
                 List<Class<?>> tps = new LinkedList<>();
                 for (String pkg : _conf.store_scan_pkgs) {
-                    clss.addAll(ReflectUtils.getClassesByPackage(pkg));
+                    clss.addAll(ReflectUtils.getClassesByPackage(pkg, true));
                 }
                 for (Class<?> cls : clss) {
                     try {
@@ -218,21 +218,27 @@ public class StorageFactory {
         synchronized (log) {
             if (exists(conf.getName()))
                 throw new StorageException("a storage named " + conf.getName() + " already exists.");
-            try {
-                Class cls = Class.forName(conf.getDriver());
-                if (Storage.class.isAssignableFrom(cls)) {
-                    Storage s = (Storage) cls.getConstructor().newInstance();
-                    if (s == null) throw new StorageException("Cannot construct storage " + conf.getName());
-                    s.create(conf);
-                    Storage proxy = (Storage) Proxy.newProxyInstance(this.getClass().getClassLoader(), PROXY_INTFS, new StorageProxy(s));
-                    _insts.add(proxy);
-                }
-            } catch (StorageException se) {
-                throw se;
-            } catch (Exception e) {
-                log.error("err while add storage.", e);
-                throw new StorageException("add storage failed: " + e.getMessage());
-            }
+            Storage store = create(conf);
+            _insts.add(store);
+        }
+    }
+
+    public Storage create(StoreConf conf) throws StorageException {
+        try {
+            Class cls = Class.forName(conf.getDriver());
+            if (!Storage.class.isAssignableFrom(cls))
+                throw new StorageException("illegal storage driver.");
+
+            Storage s = (Storage) cls.getConstructor().newInstance();
+            if (s == null) throw new StorageException("Cannot construct storage " + conf.getName());
+            s.create(conf);
+            Storage proxy = (Storage) Proxy.newProxyInstance(this.getClass().getClassLoader(), PROXY_INTFS, new StorageProxy(s));
+            return proxy;
+        } catch (StorageException se) {
+            throw se;
+        } catch (Exception e) {
+            log.error("err while add storage.", e);
+            throw new StorageException("add storage failed: " + e.getMessage());
         }
     }
 

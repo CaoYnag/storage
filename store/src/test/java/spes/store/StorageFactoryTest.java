@@ -39,13 +39,17 @@ public class StorageFactoryTest {
         Assert.assertNotNull(factory.Get("test_rw"));
         Assert.assertNull(factory.Get("test"));
 
-        Assert.assertNotNull(factory.Get(TestStore.class));
+        TestStore store = (TestStore) factory.Get(TestStore.class);
+        Assert.assertNotNull(store);
         Assert.assertNull(factory.Get(this.getClass()));
 
-        Assert.assertNotNull(factory.Get(TestStore.class, "test_rw"));
-        Assert.assertNotNull(factory.Get(TestStore.class, null));
+        store = (TestStore) factory.Get(TestStore.class, "test_rw");
+        Assert.assertNotNull(store);
+        store = (TestStore) factory.Get(TestStore.class, null);
+        Assert.assertNotNull(store);
         Assert.assertNull(factory.Get(TestStore.class, "test"));
-        Assert.assertNull(factory.Get(this.getClass(), "test_rw"));
+        store = (TestStore) factory.Get(this.getClass(), "test_rw");
+        Assert.assertNull(store);
 
 
         Assert.assertTrue(factory.Get("test_rw").perm().readable());
