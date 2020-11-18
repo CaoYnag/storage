@@ -8,9 +8,11 @@ import spes.store.Storage;
 import spes.store.StorageFactory;
 import spes.struct.Tuple;
 import spes.utils.util.ConvertUtils;
+import springfox.documentation.annotations.ApiIgnore;
 
 @RequestMapping("store")
 @Controller
+@ApiIgnore
 public class StoreWebController {
     private StorageFactory factory;
 
