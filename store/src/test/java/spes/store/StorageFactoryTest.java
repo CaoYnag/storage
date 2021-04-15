@@ -62,7 +62,12 @@ public class StorageFactoryTest {
         public void destroy(){}
         public boolean valid(){return false;}
         public String type(){return "";}
-    };
+
+        @Override
+        public String desc() {
+            return null;
+        }
+    }
 
     @Test
     public void drivers() {

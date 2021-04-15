@@ -1,6 +1,5 @@
 package test.store;
 
-import spes.store.Storage;
 import spes.store.StorageImpl;
 import spes.store.StoreConf;
 import spes.store.anno.Read;
@@ -22,6 +21,11 @@ public class TestStorage extends StorageImpl implements TestStore {
     }
 
     @Override
+    public String desc() {
+        return "a test store.";
+    }
+
+    @Override
     public void destroy() {
         // release resources here
     }
@@ -37,13 +41,11 @@ public class TestStorage extends StorageImpl implements TestStore {
     }
 
     @Override
-    @Write
     public void save(TestData data) {
         datas.put(data.id, data);
     }
 
     @Override
-    @Read
     public void read(TestData data) {
         data.msg = datas.get(data.id) == null ? "empty" : datas.get(data.id).msg;
     }

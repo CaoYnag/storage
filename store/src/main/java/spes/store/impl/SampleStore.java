@@ -19,6 +19,11 @@ public class SampleStore extends StorageImpl implements TypedStore {
     }
 
     @Override
+    public String desc() {
+        return "store sample data in memory.";
+    }
+
+    @Override
     public void destroy() {
         // release resources here
     }

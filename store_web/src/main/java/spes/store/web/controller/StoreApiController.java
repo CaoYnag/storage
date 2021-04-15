@@ -9,11 +9,11 @@ import spes.store.Storage;
 import spes.store.StorageFactory;
 import spes.store.StoreConf;
 import spes.store.except.StorageException;
-import spes.struct.List;
 import spes.utils.util.ConvertUtils;
 import spes.utils.web.pojo.RetRslt;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RequestMapping("api/store")
@@ -24,6 +24,22 @@ public class StoreApiController {
 
     public StoreApiController() {
         factory = StorageFactory.get();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "reload", method = RequestMethod.GET)
+    @ApiOperation(value="重新载入配置")
+    public RetRslt reload() {
+        factory.init();
+        return RetRslt.ok();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "sync", method = RequestMethod.GET)
+    @ApiOperation(value="同步配置")
+    public RetRslt sync() {
+        factory.sync();
+        return RetRslt.ok();
     }
 
     @ResponseBody

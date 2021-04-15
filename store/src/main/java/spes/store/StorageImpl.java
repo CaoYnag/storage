@@ -1,6 +1,7 @@
 package spes.store;
 
 import spes.store.except.StorageException;
+import spes.store.pojo.StoreMeta;
 
 public abstract class StorageImpl implements Storage {
     protected StorePerm perm;
@@ -28,5 +29,10 @@ public abstract class StorageImpl implements Storage {
     }
     public String conf(){
         return conf;
+    }
+    public abstract String desc();
+
+    public StoreMeta meta(){
+        return new StoreMeta(name(), desc(), getPermStr(), conf());
     }
 }

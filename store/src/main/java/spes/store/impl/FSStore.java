@@ -22,6 +22,11 @@ public class FSStore extends StorageImpl {
     }
 
     @Override
+    public String desc() {
+        return "default implementation for storing data in filesystem.";
+    }
+
+    @Override
     public void destroy() {
     }
 

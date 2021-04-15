@@ -2,6 +2,6 @@ package spes.store.intf;
 
 import spes.store.anno.StorageType;
 
-@StorageType("示例数据")
+@StorageType(value = "示例数据", desc = "store sample datas.")
 public interface TypedStore {
 }
