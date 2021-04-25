@@ -17,9 +17,6 @@ public abstract class StorageImpl implements Storage {
         conf = cf.getConf();
         desc = cf.getDesc();
     }
-    public StoreConf asStoreConf(){
-        return new StoreConf(name, driver, perm.getPermStr(), conf);
-    }
     public String name(){
         return name;
     }
@@ -34,9 +31,5 @@ public abstract class StorageImpl implements Storage {
     }
     public String desc() {
         return desc;
-    }
-
-    public StoreMeta meta(){
-        return new StoreMeta(name(), desc(), getPermStr(), conf());
     }
 }

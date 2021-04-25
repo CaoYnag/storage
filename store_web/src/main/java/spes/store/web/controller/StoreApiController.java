@@ -77,7 +77,7 @@ public class StoreApiController {
     @ApiOperation(value="获取所有存储")
     public RetRslt list() {
         List<Storage> list = factory.list();
-        return RetRslt.ok(list);
+        return RetRslt.ok(ConvertUtils.convert(list, Storage::meta));
     }
 
     @ResponseBody
@@ -95,7 +95,7 @@ public class StoreApiController {
                        @PathVariable("name") String name) {
         Storage store = factory.Get(name);
         if (store == null) return RetRslt.error("cannot find specified data!");
-        else return RetRslt.ok(store);
+        else return RetRslt.ok(store.meta());
     }
 
     @ResponseBody
@@ -103,6 +103,8 @@ public class StoreApiController {
     @ApiOperation(value="添加新的存储")
     public RetRslt save(@ApiParam(name = "name", value = "存储名称", required = true)
                         @RequestParam("name") String name,
+                        @ApiParam(name = "desc", value = "存储描述", required = true)
+                        @RequestParam("desc") String desc,
                         @ApiParam(name = "driver", value = "存储驱动", required = true)
                         @RequestParam("driver") String driver,
                         @ApiParam(name = "perm", value = "存储权限", required = true)
@@ -110,7 +112,7 @@ public class StoreApiController {
                         @ApiParam(name = "conf", value = "存储配置", required = true)
                         @RequestParam("conf") String conf) {
         try {
-            factory.add(new StoreConf(name, driver, perm, conf));
+            factory.add(new StoreConf(name, desc, driver, perm, conf));
         } catch (StorageException se) {
             return RetRslt.error(se.getMessage());
         }
@@ -122,7 +124,8 @@ public class StoreApiController {
     @ApiOperation(value="根据名称删除存储")
     public RetRslt delete(@ApiParam(name = "name", value = "存储名称", required = true)
                           @PathVariable("name") String name) {
-        factory.remove(name);
-        return RetRslt.ok();
+        if(factory.remove(name, 1))
+            return RetRslt.ok();
+        else return RetRslt.error("failed remove store [" + name + "], maybe specified store is in use, check logs for detail.");
     }
 }

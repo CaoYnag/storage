@@ -3,15 +3,17 @@ package spes.store.pojo;
 public class StoreMeta {
     public String name;
     public String desc;
+    public String driver;
     public String perm;
     public String conf;
 
     public StoreMeta() {
     }
 
-    public StoreMeta(String name, String desc, String perm, String conf) {
+    public StoreMeta(String name, String desc, String driver, String perm, String conf) {
         this.name = name;
         this.desc = desc;
+        this.driver = driver;
         this.perm = perm;
         this.conf = conf;
     }
@@ -30,6 +32,14 @@ public class StoreMeta {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public String getDriver() {
+        return driver;
+    }
+
+    public void setDriver(String driver) {
+        this.driver = driver;
     }
 
     public String getPerm() {
@@ -53,6 +63,7 @@ public class StoreMeta {
         return "StoreMeta{" +
                 "name='" + name + '\'' +
                 ", desc='" + desc + '\'' +
+                ", driver='" + driver + '\'' +
                 ", perm='" + perm + '\'' +
                 ", conf='" + conf + '\'' +
                 '}';

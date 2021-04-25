@@ -27,6 +27,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class StorageFactory {
@@ -44,10 +45,10 @@ public class StorageFactory {
     private StoreConfiguration _conf;
     private Map<String, Class<?>> _types;
     /*
-    * use for proxy generating
-    * init in _sync or _init.
-    * so can not support runtime store types adding.
-    * */
+     * use for proxy generating
+     * init in _sync or _init.
+     * so can not support runtime store types adding.
+     * */
     private Class<?>[] PROXY_INTFS;
 
     /*
@@ -87,12 +88,12 @@ public class StorageFactory {
     }
 
     /*
-    * just load from conf, do not persist to conf, or erase exists insts
-    * exp:
-    *   mem: a, b, c
-    *   conf: b, c, d
-    *   after init: a, b, c, d
-    * */
+     * just load from conf, do not persist to conf, or erase exists insts
+     * exp:
+     *   mem: a, b, c
+     *   conf: b, c, d
+     *   after init: a, b, c, d
+     * */
     private void _init(){
         lock.writeLock().lock();
         _inited = false;
@@ -142,9 +143,9 @@ public class StorageFactory {
     }
 
     /*
-    * sync conf file and memory
-    * load new item from conf, and write runtime-added item to conf.
-    * */
+     * sync conf file and memory
+     * load new item from conf, and write runtime-added item to conf.
+     * */
     private void _sync(){
         lock.writeLock().lock();
         _inited = false;
@@ -224,8 +225,8 @@ public class StorageFactory {
     }
 
     /*
-    * intf for _init
-    * */
+     * intf for _init
+     * */
     public void init(){
         _init();
     }
@@ -333,15 +334,25 @@ public class StorageFactory {
             throw new StorageException("add storage failed: " + e.getMessage());
         }
     }
-    public void remove(String name) {
-        lock.writeLock().lock();
-        if (_inited) for (Storage s : _insts)
-            if (s.name().equals(name)) {
-                s.destroy();
-                _insts.remove(s);
-                break;
+    public boolean remove(String name, long timeout) {
+        try {
+            if(!lock.writeLock().tryLock(timeout, TimeUnit.SECONDS)) {
+                log.error(String.format("timeout [%ds] while trying remove store [%s].", timeout, name));
+                return false;
             }
-        lock.writeLock().unlock();
+
+            if (_inited) for (Storage s : _insts)
+                if (s.name().equals(name)) {
+                    s.destroy();
+                    _insts.remove(s);
+                    break;
+                }
+            lock.writeLock().unlock();
+            return true;
+        } catch (InterruptedException e) {
+            log.error(String.format("lock interrupt while trying remove store [%s].", timeout, name));
+            return false;
+        }
     }
     public List<Storage> list() {
         lock.readLock().lock();

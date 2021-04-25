@@ -26,6 +26,7 @@
             <thead>
             <tr>
                 <th style="width: 4%">Name</th>
+                <th style="width: 4%">Desc</th>
                 <th style="width: 4%">Driver</th>
                 <th style="width: 2%">Perm</th>
                 <th style="width: 6%">操作</th>
@@ -35,6 +36,7 @@
         <#list stores as store>
         <tr>
             <td id="${store.name}_nm">${store.name}</td>
+            <td id="${store.name}_nm">${store.desc}</td>
             <td id="${store.name}_dv">${store.driver}</td>
             <td id="${store.name}_pm">${store.perm}</td>
             <td id="${store.name}_cf" class="hide">${store.conf}</td>
@@ -63,11 +65,15 @@
                     <td><input type="text" id="uName"></td>
                 </tr>
                 <tr>
+                    <td>Desc</td>
+                    <td><input type="text" id="uDesc"></td>
+                </tr>
+                <tr>
                     <td>Driver</td>
                     <td><input type="text" list="driver_list" id="uDriver">
                         <datalist id="driver_list">
                         <#list drivers as driver>
-                        <option id="d_${driver.first}">${driver.second}</option>
+                        <option id="d_${driver.driver}">${driver.name}</option>
                         </#list>
                         </datalist></td>
                 </tr>
@@ -99,6 +105,10 @@
                 <tr>
                     <td>Name</td>
                     <td><div class="store info value uk-text-break" id="iName"></div></td>
+                </tr>
+                <tr>
+                    <td>Desc</td>
+                    <td><div class="store info value uk-text-break" id="iDesc"></div></td>
                 </tr>
                 <tr>
                     <td>Driver</td>
@@ -140,9 +150,10 @@
     </div>
 </div>
 <script>
-    function fillForm(name, driver, perm, conf) {
+    function fillForm(name, desc, driver, perm, conf) {
         $("#storeName").html(name);
         $("#iName").html(name);
+        $("#iDesc").html(desc);
         $("#iDriver").html(driver);
         $("#iPerm").html(perm);
         $("#iConf").html(conf);
@@ -151,6 +162,7 @@
     function submitForm() {
         $.post("${ctx.contextPath}/api/store/stores", {
             name: $("#uName").val(),
+            desc: $("#uDesc").val(),
             driver: $("#uDriver").val(),
             perm: $("#uPerm").val(),
             conf: $("#uConf").val()

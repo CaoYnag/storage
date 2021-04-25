@@ -1,6 +1,7 @@
 package spes.store;
 
 import spes.store.except.StorageException;
+import spes.store.pojo.StoreMeta;
 
 public interface Storage{
     /*
@@ -36,7 +37,6 @@ public interface Storage{
     /*
     * base info of this store.
     * */
-    StoreConf asStoreConf();
     String name();
     String driver();
     StorePerm perm();
@@ -62,5 +62,14 @@ public interface Storage{
     }
     default String getDesc() {
         return desc();
+    }
+
+
+
+    default StoreConf asStoreConf(){
+        return new StoreConf(name(), desc(), driver(), perm().getPermStr(), conf());
+    }
+    default StoreMeta meta(){
+        return new StoreMeta(name(), desc(), driver(), getPermStr(), conf());
     }
 }

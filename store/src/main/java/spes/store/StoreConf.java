@@ -10,8 +10,9 @@ public class StoreConf {
     public StoreConf() {
     }
 
-    public StoreConf(String name, String driver, String perm, String conf) {
+    public StoreConf(String name, String desc, String driver, String perm, String conf) {
         this.name = name;
+        this.desc = desc;
         this.driver = driver;
         this.perm = perm;
         this.conf = conf;
