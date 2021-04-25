@@ -5,6 +5,7 @@
   "stores": [
     {
       "name": "local",
+      "desc": "a base storage.",
       "driver": "spes.store.impl.FSStore",
       "perm": "rw",
       "conf": "{}"

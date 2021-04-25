@@ -2,6 +2,7 @@ package spes.store;
 
 public class StoreConf {
     private String name;
+    private String desc;
     private String driver;
     private String perm;
     private String conf;
@@ -48,10 +49,19 @@ public class StoreConf {
         this.conf = conf;
     }
 
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
     @Override
     public String toString() {
         return "StoreConf{" +
                 "name='" + name + '\'' +
+                ", desc='" + desc + '\'' +
                 ", driver='" + driver + '\'' +
                 ", perm='" + perm + '\'' +
                 ", conf='" + conf + '\'' +

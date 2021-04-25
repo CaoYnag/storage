@@ -3,12 +3,14 @@ package test.store;
 import spes.store.StorageImpl;
 import spes.store.StoreConf;
 import spes.store.anno.Read;
+import spes.store.anno.StoreDriver;
 import spes.store.anno.Write;
 import spes.store.except.StorageException;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@StoreDriver(value = "TestStore", desc = "storage for test.")
 public class TestStorage extends StorageImpl implements TestStore {
     private Map<Integer, TestData> datas;
     public TestStorage() {
@@ -18,11 +20,6 @@ public class TestStorage extends StorageImpl implements TestStore {
     @Override
     public void create(StoreConf cf) throws StorageException {
         super.create(cf);
-    }
-
-    @Override
-    public String desc() {
-        return "a test store.";
     }
 
     @Override

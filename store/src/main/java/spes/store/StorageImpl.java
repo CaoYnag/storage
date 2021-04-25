@@ -8,12 +8,14 @@ public abstract class StorageImpl implements Storage {
     protected String name;
     protected String driver;
     protected String conf;
+    protected String desc;
 
     public void create(StoreConf cf) throws StorageException {
         name = cf.getName();
         driver = cf.getDriver();
         perm = new StorePerm(cf.getPerm());
         conf = cf.getConf();
+        desc = cf.getDesc();
     }
     public StoreConf asStoreConf(){
         return new StoreConf(name, driver, perm.getPermStr(), conf);
@@ -30,7 +32,9 @@ public abstract class StorageImpl implements Storage {
     public String conf(){
         return conf;
     }
-    public abstract String desc();
+    public String desc() {
+        return desc;
+    }
 
     public StoreMeta meta(){
         return new StoreMeta(name(), desc(), getPermStr(), conf());

@@ -6,9 +6,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import spes.store.anno.Read;
 import spes.store.anno.StorageType;
+import spes.store.anno.StoreDriver;
 import spes.store.anno.Write;
 import spes.store.except.StorageException;
 import spes.store.except.StoragePermException;
+import spes.store.pojo.DriverMeta;
 import spes.struct.LinkedList;
 import spes.struct.Tuple;
 import spes.utils.string.StringUtils;
@@ -37,7 +39,7 @@ public class StorageFactory {
 
     private List<Storage> _insts;
     //private List<Class<?>> _clss;
-    private List<Class<?>> _drivers;
+    private Map<Class<?>, DriverMeta> _drivers;
     private boolean _inited;
     private StoreConfiguration _conf;
     private Map<String, Class<?>> _types;
@@ -78,7 +80,7 @@ public class StorageFactory {
 
     private StorageFactory() {
         _insts = new LinkedList<>();
-        _drivers = new LinkedList<>();
+        _drivers = new HashMap<>();
         _types = new HashMap<>();
         lock = new ReentrantReadWriteLock();
         _init();
@@ -118,8 +120,7 @@ public class StorageFactory {
                     }
                 } catch (Exception e) {
                 }
-                if(!cls.isInterface() && Storage.class.isAssignableFrom(cls))
-                    _drivers.add(cls);
+                addDriver(cls);
             }
             tps.add(Storage.class);
             PROXY_INTFS = tps.toArray(new Class[0]);
@@ -316,7 +317,8 @@ public class StorageFactory {
     public Storage create(StoreConf conf) throws StorageException {
         try {
             Class cls = Class.forName(conf.getDriver());
-            if (!Storage.class.isAssignableFrom(cls))
+            // if not contains this driver, record it.
+            if(!_drivers.containsKey(cls) && !addDriver(cls))
                 throw new StorageException("illegal storage driver.");
 
             Storage s = (Storage) cls.getConstructor().newInstance();
@@ -349,24 +351,34 @@ public class StorageFactory {
             lock.readLock().unlock();
         }
     }
-    public List<Class<?>> drivers(){
-        lock.readLock().lock();
+    public List<DriverMeta> drivers(){
         try{
-            return ConvertUtils.convert(_drivers, d->d);
+            lock.readLock().lock();
+            List<DriverMeta> metas = new LinkedList<>();
+            ConvertUtils.convert(_drivers.keySet(), metas, m->{
+                return _drivers.get(m);
+            });
+            return metas;
         } finally {
             lock.readLock().unlock();
         }
     }
-    public void addDriver(Class<?> cls){
-        lock.writeLock().lock();
-        if(cls != null && !cls.isInterface() && Storage.class.isAssignableFrom(cls))
-            _drivers.add(cls);
-        lock.writeLock().unlock();
+    public boolean addDriver(Class<?> cls){
+        try{
+            lock.writeLock().lock();
+            StoreDriver meta = cls.getAnnotation(StoreDriver.class);
+            if(meta != null && !cls.isInterface() && Storage.class.isAssignableFrom(cls)){
+                _drivers.put(cls, new DriverMeta(meta.value(), meta.desc(), cls.getName()));
+                return true;
+            } else return false;
+        } finally {
+            lock.writeLock().unlock();
+        }
     }
     public List<Tuple<String, Class<?>>> getAllStorageTypes() {
-        List<String> list = new LinkedList<>();
-        lock.readLock().lock();
         try{
+            List<String> list = new LinkedList<>();
+            lock.readLock().lock();
             list.addAll(_types.keySet());
             return new LinkedList<>(ConvertUtils.convert(list, n -> new Tuple<>(n, _types.get(n))));
         } finally {
@@ -374,8 +386,8 @@ public class StorageFactory {
         }
     }
     public Class<?> getStorageType(String name){
-        lock.readLock().lock();
         try{
+            lock.readLock().lock();
             return _types.get(name);
         } finally {
             lock.readLock().unlock();

@@ -9,6 +9,7 @@ import spes.store.Storage;
 import spes.store.StorageFactory;
 import spes.store.StoreConf;
 import spes.store.except.StorageException;
+import spes.store.pojo.DriverMeta;
 import spes.utils.util.ConvertUtils;
 import spes.utils.web.pojo.RetRslt;
 
@@ -83,7 +84,7 @@ public class StoreApiController {
     @RequestMapping(value = "drivers", method = RequestMethod.GET)
     @ApiOperation(value="获取所有驱动")
     public RetRslt drivers() {
-        java.util.List<String> list = ConvertUtils.convert(factory.drivers(), Class::getName);
+        java.util.List<DriverMeta> list = factory.drivers();
         return RetRslt.ok(list);
     }
 

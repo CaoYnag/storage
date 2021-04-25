@@ -41,6 +41,8 @@ public interface Storage{
     String driver();
     StorePerm perm();
     String conf();
+    /* description of this store */
+    String desc();
 
 
     /*
@@ -57,5 +59,8 @@ public interface Storage{
     }
     default String getConf(){
         return conf();
+    }
+    default String getDesc() {
+        return desc();
     }
 }

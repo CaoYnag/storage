@@ -4,12 +4,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import spes.store.StorageImpl;
 import spes.store.StoreConf;
+import spes.store.anno.StoreDriver;
 import spes.store.except.StorageException;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+@StoreDriver(value = "FS Store", desc = "store in fs.")
 public class FSStore extends StorageImpl {
     private Log log = LogFactory.getLog(this.getClass());
 
@@ -19,11 +21,6 @@ public class FSStore extends StorageImpl {
     @Override
     public void create(StoreConf cf) throws StorageException {
         super.create(cf);
-    }
-
-    @Override
-    public String desc() {
-        return "default implementation for storing data in filesystem.";
     }
 
     @Override
