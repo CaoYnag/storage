@@ -27,6 +27,7 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -190,7 +191,7 @@ public class StorageFactory {
         lock.writeLock().unlock();
     }
 
-    class StorageProxy implements InvocationHandler{
+    class StorageProxy implements InvocationHandler {
         private Storage _store;
 
         public StorageProxy(Storage _store) {
@@ -199,6 +200,9 @@ public class StorageFactory {
 
         @Override
         public Object invoke(Object o, Method method, Object[] args) throws Throwable {
+            if(method.getName().equals("equals")){
+                return equals(args[0]);
+            }
             Read r = method.getAnnotation(Read.class);
             Write w = method.getAnnotation(Write.class);
             if(r != null && !_store.perm().readable()) throw new StoragePermException("NO READ PERMISSION: " + _store.name());
@@ -210,6 +214,21 @@ public class StorageFactory {
             } catch (InvocationTargetException ite) {
             }
             return ret;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o instanceof StorageProxy) {
+                StorageProxy that = (StorageProxy) o;
+                return Objects.equals(_store, that._store);
+            }
+            return o.equals(this);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(_store);
         }
     }
 
@@ -341,16 +360,24 @@ public class StorageFactory {
                 return false;
             }
 
+            Storage target = null;
             if (_inited) for (Storage s : _insts)
                 if (s.name().equals(name)) {
-                    s.destroy();
-                    _insts.remove(s);
+                    target = s;
                     break;
                 }
+            if(target == null){
+                log.error(String.format("cannot find store [%s].", name));
+                return false;
+            }
+
+            target.destroy();
+            boolean ret = false;
+            if(_insts.remove(target)) ret = true;
             lock.writeLock().unlock();
-            return true;
-        } catch (InterruptedException e) {
-            log.error(String.format("lock interrupt while trying remove store [%s].", timeout, name));
+            return ret;
+        } catch (Exception e) {
+            log.error(String.format("err while trying remove store [%s].", name), e);
             return false;
         }
     }
@@ -366,9 +393,7 @@ public class StorageFactory {
         try{
             lock.readLock().lock();
             List<DriverMeta> metas = new LinkedList<>();
-            ConvertUtils.convert(_drivers.keySet(), metas, m->{
-                return _drivers.get(m);
-            });
+            ConvertUtils.convert(_drivers.keySet(), metas, m-> _drivers.get(m));
             return metas;
         } finally {
             lock.readLock().unlock();

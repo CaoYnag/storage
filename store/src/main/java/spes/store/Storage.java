@@ -64,12 +64,15 @@ public interface Storage{
         return desc();
     }
 
-
-
     default StoreConf asStoreConf(){
         return new StoreConf(name(), desc(), driver(), perm().getPermStr(), conf());
     }
     default StoreMeta meta(){
         return new StoreMeta(name(), desc(), driver(), getPermStr(), conf());
+    }
+
+    /* support specified store type */
+    default boolean support(Class<?> cls){
+        return cls.isAssignableFrom(this.getClass());
     }
 }

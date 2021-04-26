@@ -22,9 +22,8 @@ public class StoreWebController {
 
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public String list(Model model) {
-        model.addAttribute("stores", ConvertUtils.convert(factory.list(), Storage::asStoreConf));
-        model.addAttribute("drivers", ConvertUtils.convert(factory.drivers(),
-                cls->new Tuple<>(cls.getName().replaceAll("\\.", "_"), cls.getName())));
+        model.addAttribute("stores", ConvertUtils.convert(factory.list(), Storage::meta));
+        model.addAttribute("drivers", factory.drivers());
         model.addAttribute("types", ConvertUtils.convert(factory.getAllStorageTypes(), t -> t.first));
         return "store/list";
     }

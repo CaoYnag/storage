@@ -67,7 +67,7 @@ public class StoreApiController {
             if (tcls == null)
                 ret.put(type, "miss");
             else
-                ret.put(type, tcls.isAssignableFrom(st.getClass()) ? "true" : "false");
+                ret.put(type, st.support(tcls) ? "true" : "false");
         }
         return RetRslt.ok(ret);
     }

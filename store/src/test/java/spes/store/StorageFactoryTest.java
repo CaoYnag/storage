@@ -4,6 +4,8 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import spes.store.anno.StoreDriver;
+import test.outside_store.AnotherStorage;
 import test.store.TestStore;
 import test.store.TestStorage;
 
@@ -58,25 +60,25 @@ public class StorageFactoryTest {
         Assert.assertEquals(factory.Get("test_rw").type(), "test");
     }
 
-    class Tmp extends StorageImpl{
-        public void destroy(){}
-        public boolean valid(){return false;}
-        public String type(){return "";}
-
-        @Override
-        public String desc() {
-            return null;
-        }
-    }
-
     @Test
     public void drivers() {
         Assert.assertNotNull(factory.drivers());
         Assert.assertEquals(factory.drivers().size(), 1);
-        Assert.assertEquals(factory.drivers().get(0), TestStorage.class);
+        Assert.assertEquals(factory.drivers().get(0).getName(), "TestStore");
         factory.addDriver(this.getClass());
-        factory.addDriver(Tmp.class);
+        factory.addDriver(AnotherStorage.class);
         Assert.assertEquals(factory.drivers().size(), 2);
-        Assert.assertEquals(factory.drivers().get(1), Tmp.class);
+        Assert.assertEquals(factory.drivers().get(1).getName(), "Another");
+    }
+
+    @Test
+    public void test_remove(){
+        Assert.assertEquals(factory.list().size(), 3);
+        Assert.assertTrue(factory.remove("test_r", 1));
+        Assert.assertEquals(factory.list().size(), 2);
+        Assert.assertTrue(factory.remove("test_rw", 1));
+        Assert.assertEquals(factory.list().size(), 1);
+        Assert.assertTrue(factory.remove("test_w", 1));
+        Assert.assertEquals(factory.list().size(), 0);
     }
 }

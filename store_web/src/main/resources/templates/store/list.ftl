@@ -36,7 +36,7 @@
         <#list stores as store>
         <tr>
             <td id="${store.name}_nm">${store.name}</td>
-            <td id="${store.name}_nm">${store.desc}</td>
+            <td id="${store.name}_ds">${store.desc!}</td>
             <td id="${store.name}_dv">${store.driver}</td>
             <td id="${store.name}_pm">${store.perm}</td>
             <td id="${store.name}_cf" class="hide">${store.conf}</td>
@@ -237,7 +237,7 @@
         $(".store.detail").click(function () {
             let nm = $(this).attr("id").replace("detail_", "");
             console.log(nm);
-            fillForm(nm, $("#" + nm + "_dv").html(), $("#" + nm + "_pm").html(), $("#" + nm + "_cf").html());
+            fillForm(nm, $("#" + nm + "_ds").html(), $("#" + nm + "_dv").html(), $("#" + nm + "_pm").html(), $("#" + nm + "_cf").html());
             UIkit.modal("#infoModal").show();
 
             let types = new Array();
