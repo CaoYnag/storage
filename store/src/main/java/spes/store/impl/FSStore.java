@@ -30,6 +30,10 @@ public class FSStore extends StorageImpl {
     public void save(String path, byte[] data){
         try{
             File f = new File(path);
+            if(f.isDirectory()){
+                f.mkdirs();
+                return;
+            }
             File p = f.getParentFile();
             if(!p.exists()) p.mkdirs();
             FileOutputStream fos = new FileOutputStream(f);
@@ -40,16 +44,20 @@ public class FSStore extends StorageImpl {
         }
     }
 
-    public byte[] read(String path){
+    public byte[] read(String path) throws StorageException {
         byte[] data = null;
         try{
             File f = new File(path);
+            if(f.isDirectory()) throw new StorageException("illegal action for a directory.");
             FileInputStream fis = new FileInputStream(f);
             data = new byte[(int) f.length()];
             fis.read(data);
             fis.close();
-        } catch (Exception e){
+        } catch(StorageException se) {
+            throw se;
+        } catch (Exception e) {
             log.error("err read file " + path, e);
+            throw new StorageException(e.getMessage());
         }
         return data;
     }

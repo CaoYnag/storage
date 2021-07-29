@@ -1,0 +1,30 @@
+* TODOs
+** store
+*** some illegal configuration check.
+**** TODO a store inst's permission must be one of ["R", "W", "RW"]
+*** add priority configuration
+** store-web 
+*** DONE add api, add back end and front end
+*** DONE cors
+
+* Features
+** TODO storage metadata persistance
+a `storage.json` should only be a temporary solution.
+there should be some interface for persist stores.
+and the persist solution may also a `standard storage` that under management.
+
+and maybe a `storage-init.json` may be a good way to init storages when fisrt startup.
+** TODO more permission or type for a store
+- visibility?
+- internal store?
+  a internal store is used by this library itself. it could not be modifified. and maybe also invisible in public interfaces.
+- storetype permission
+  maybe some data, was dessigned read/write only. all implemention's custom settings would be override.
+  or a datatype must be writable, when a store inst was set to 
+** TODO rollback?
+** TODO progress
+add a progress callback.
+** DONE R/W perm control
+** DONE thread-safe
+make `StorageFactory` interfaces thread-safe.
+`thread-safe` responsibility of a storage implemention, is own to the storage itself.

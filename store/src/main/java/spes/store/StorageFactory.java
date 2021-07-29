@@ -219,10 +219,10 @@ public class StorageFactory {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (o instanceof StorageProxy) {
-                StorageProxy that = (StorageProxy) o;
-                return Objects.equals(_store, that._store);
-            }
+//            if (o instanceof StorageProxy) {
+//                StorageProxy that = (StorageProxy) o;
+//                return Objects.equals(_store, that._store);
+//            }
             return o.equals(this);
         }
 
